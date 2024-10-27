@@ -4,14 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ToroVacaController extends Controller
+class ToroVacaGameController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return [
+            'msg' => 'Juego en proceso'
+        ];
+    }
+
+    public function timergame($timer){
+
+       return [
+        'msg' => 'Game Over. Tiempo agotado'
+       ];
     }
 
     /**

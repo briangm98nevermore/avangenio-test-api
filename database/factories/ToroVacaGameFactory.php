@@ -17,7 +17,10 @@ class ToroVacaGameFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombre' => fake()->name(),
+            'edad' => fake()->randomNumber(2,true),
+            'estado' => fake()->numberBetween(0,1),
+            'ranking' => fake()->randomFloat(2)
         ];
     }
 }

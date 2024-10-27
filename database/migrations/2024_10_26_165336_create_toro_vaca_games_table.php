@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('toro_vaca_games', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre')->require;
+            $table->integer('edad')->require;
+            $table->boolean('estado');
+            $table->integer('ranking');
             $table->timestamps();
         });
     }

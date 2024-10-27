@@ -13,6 +13,6 @@ class ToroVacaGameSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        //configuracion de seeders en DatabaseSeeder.php
     }
 }

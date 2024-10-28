@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->require;
             $table->integer('edad')->require;
-            $table->boolean('estado');
-            $table->integer('ranking');
+            $table->boolean('estado')->nullable();
+            $table->integer('ranking')->nullable();
             $table->timestamps();
         });
     }

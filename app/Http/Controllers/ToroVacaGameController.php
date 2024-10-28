@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ToroVacaGame;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 
 class ToroVacaGameController extends Controller
 {
@@ -28,7 +32,33 @@ class ToroVacaGameController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //CrearNuevoJuego
+    }
+
+    public function CrearNuevoJuego(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),[
+            'nombre'=>'required|max:255',
+            'edad'=>'required|digits_between:1,2'
+        ]);
+
+        if ($validator->fails()) {
+            $data = [
+                'msg'=>'Error en la validacion de los datos',
+                'errores'=>$validator->errors(),
+                'status' => 400
+            ];
+
+            return response()->json($data,400);
+        }
+
+        $id = DB::table('toro_vaca_games')->insertGetId(
+            ['nombre'=>$request->nombre, 'edad'=>$request->edad]
+        );
+
+       return response()->json($id,200);
+
     }
 
     /**

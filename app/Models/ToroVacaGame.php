@@ -11,8 +11,10 @@ class ToroVacaGame extends Model
 
     use HasFactory, Notifiable;
 
+    protected $table = 'toro_vaca_games';
+
     protected $fillable = [
-        'name',
+        'nombre',
         'edad',
         'estado',
         'ranking'

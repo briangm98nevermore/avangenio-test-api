@@ -11,8 +11,8 @@ Route::get('/user', function (Request $request) {
 Route::prefix('game')->group(function () {
 
 Route::get('/tiempodejuego/{time}',[ToroVacaGameController::class,'timergame']);
-Route::get('/test',[ToroVacaGameController::class,'index']);
-Route::get('/ruta2',[ToroVacaGameController::class,'index2']);
+Route::post('/CrearNuevoJuego',[ToroVacaGameController::class,'CrearNuevoJuego']);
+Route::get('/ruta2',[ToroVacaGameController::class,'index']);
 Route::get('/ruta3',[ToroVacaGameController::class,'index3']);
 
 });

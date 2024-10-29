@@ -54,8 +54,20 @@ class ToroVacaGameController extends Controller
         }
 
         $id = DB::table('toro_vaca_games')->insertGetId(
-            ['nombre'=>$request->nombre, 'edad'=>$request->edad]
+            ['nombre'=>$request->nombre,
+             'edad'=>$request->edad,
+             'numeroPropuesto'=>fake()->randomNumber(4,true),
+             ]
         );
+
+        if (!$id) {
+            $data = [
+                'msg'=>'Error en la creacion del juego',
+                'status' => 500
+            ];
+
+            return response()->json($data,500);
+        }
 
        return response()->json($id,200);
 
@@ -82,6 +94,25 @@ class ToroVacaGameController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        $game = ToroVacaGame::find($id);
+
+        if (!$game) {
+            $data = [
+                'msg'=>'El juego no existe.',
+                'status' => 500
+            ];
+
+            return response()->json($data,500);
+        }
+
+        $game->delete();
+
+        $data = [
+            'msg'=>'Juego eliminado correctamente',
+            'status' => 200
+        ];
+
+        return response()->json($data,200);
     }
 }

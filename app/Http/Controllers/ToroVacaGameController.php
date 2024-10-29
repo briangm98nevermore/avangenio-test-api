@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ToroVacaGame;
+use Hamcrest\Type\IsNumeric;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
@@ -13,17 +14,15 @@ class ToroVacaGameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function gameOver()
     {
         return [
-            'msg' => 'Juego en proceso'
+            'msg' => 'Game Over: Tiempo de juego terminado.'
         ];
     }
 
     public function timergame(){
-        static $staticVar = 0;
-        $staticVar++;
-        return $staticVar;
+       return 'timegame';
     }
 
     /**
@@ -75,9 +74,20 @@ class ToroVacaGameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function proponerCombinacion(string $id)
     {
-        //
+
+        if (!is_numeric($id)) {
+            $data=[
+                'msg'=>'El valor no es numerico',
+                'valor'=>$id,
+                'status'=>500
+            ];
+            return response()->json($data,500);
+        }
+
+
+       return response()->json($id,200);
     }
 
     /**

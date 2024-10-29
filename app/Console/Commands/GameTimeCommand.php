@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\ToroVacaGameController;
 use Illuminate\Console\Command;
+use Illuminate\Routing\RouteUri;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class GameTimeCommand extends Command
 {
@@ -26,11 +29,11 @@ class GameTimeCommand extends Command
      */
     public function handle()
     {
-        $id = DB::table('toro_vaca_games')->insertGetId(
-            ['nombre'=>'NameTestGame',
-             'edad'=>26,
-             'numeroPropuesto'=>fake()->randomNumber(4,true),
-             ]
-        );
+        // $id = DB::table('toro_vaca_games')->insertGetId(
+        //     ['nombre'=>'NameTestGame',
+        //      'edad'=>26,
+        //      'numeroPropuesto'=>fake()->randomNumber(4,true),
+        //      ]
+        // );
     }
 }

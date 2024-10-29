@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('edad')->require;
             $table->integer('numeroPropuesto')->nullable();
             $table->boolean('estado')->nullable();
+            $table->float('evaluacion')->nullable();
             $table->integer('ranking')->nullable();
             $table->timestamps();
         });

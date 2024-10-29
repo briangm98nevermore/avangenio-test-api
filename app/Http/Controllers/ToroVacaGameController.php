@@ -20,11 +20,10 @@ class ToroVacaGameController extends Controller
         ];
     }
 
-    public function timergame($timer){
-
-       return [
-        'msg' => 'Game Over. Tiempo agotado'
-       ];
+    public function timergame(){
+        static $staticVar = 0;
+        $staticVar++;
+        return $staticVar;
     }
 
     /**

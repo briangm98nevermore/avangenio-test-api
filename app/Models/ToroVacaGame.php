@@ -17,7 +17,9 @@ class ToroVacaGame extends Model
         'nombre',
         'edad',
         'numeroPropuesto',
+        'numeroIntentos',
         'estado',
+        'evaluacion',
         'ranking'
     ];
 }

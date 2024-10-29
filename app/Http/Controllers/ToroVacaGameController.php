@@ -86,8 +86,15 @@ class ToroVacaGameController extends Controller
             return response()->json($data,500);
         }
 
+        $consulta = ToroVacaGame::latest('id')->first();
+       // return response()->json($idData,200);
 
-       return response()->json($id,200);
+        $datagame = [
+            'numero propuesto'=>$id,
+            'Cantidad de toros y vacas alcanzados'
+        ];
+
+        return response()->json($consulta,200);
     }
 
     /**

@@ -25,7 +25,7 @@
                         "description": "Edad del usuario",
                         "required": true,
                         "schema": {
-                            "type": "int"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -38,6 +38,31 @@
                     },
                     "400": {
                         "description": "Error en la validacion de los datos"
+                    }
+                }
+            }
+        },
+        "/api/game/EliminarJuego/{id}": {
+            "delete": {
+                "summary": "Endpoint para eliminar un juego existente",
+                "operationId": "96a6188ed5fce23946563b656428a380",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id del juego a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Juego eliminado correctamente"
+                    },
+                    "500": {
+                        "description": "El juego no existe."
                     }
                 }
             }

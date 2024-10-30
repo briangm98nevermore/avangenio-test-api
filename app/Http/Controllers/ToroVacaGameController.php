@@ -59,7 +59,7 @@ class ToroVacaGameController extends Controller
      *         in="query",
      *         description="Edad del usuario",
      *         required=true,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(response="200", description="Juego creado correctamente"),
      *     @OA\Response(response="500", description="Error en la creacion del juego"),
@@ -173,9 +173,25 @@ class ToroVacaGameController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
 
+     /**
+     * @OA\Delete(
+     *     path="/api/game/EliminarJuego/{id}",
+     *     summary="Endpoint para eliminar un juego existente",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id del juego a eliminar",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Response(response="200", description="Juego eliminado correctamente"),
+     *     @OA\Response(response="500", description="El juego no existe.")
+     * )
+     */
+    public function destroy(int $id)
+    {
         $game = ToroVacaGame::find($id);
 
         if (!$game) {
@@ -183,7 +199,6 @@ class ToroVacaGameController extends Controller
                 'msg'=>'El juego no existe.',
                 'status' => 500
             ];
-
             return response()->json($data,500);
         }
 

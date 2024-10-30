@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Info(
- *    title="AVANGENIO-TEST-API",
+ *    title="AVANGENIO-TEST-API-DOCUMENTATION",
  *    version="3.0.0",
  * )
  * @OA\SecurityScheme(

@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'AVANGENIO-TEST-API',
+                'title' => 'AVANGENIO-TEST-API-DOCUMENTATION',
             ],
 
             'routes' => [

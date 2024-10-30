@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ToroVacaGame;
-use Hamcrest\Type\IsNumeric;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Global_;
 
 class ToroVacaGameController extends Controller
 {
@@ -16,9 +17,10 @@ class ToroVacaGameController extends Controller
      */
     public function gameOver()
     {
-        return [
-            'msg' => 'Game Over: Tiempo de juego terminado.'
-        ];
+       $data = [4,4,4,4];
+         //$comprobacion=in_array(4,$data);
+         return response()->json($data);
+
     }
 
     public function timergame(){
@@ -85,16 +87,38 @@ class ToroVacaGameController extends Controller
             ];
             return response()->json($data,500);
         }
+        if (strlen($id)!=4) {
+            $data=[
+                'msg'=>'El valor debe ser de cuatro digitos',
+                'valor'=>$id,
+                'status'=>500
+            ];
+            return response()->json($data,500);
+        }
 
         $consulta = ToroVacaGame::latest('id')->first();
-       // return response()->json($idData,200);
+        $string=(string)$consulta->numeroPropuesto;
+        $idNumeroPropuesto=str_split($string);
+        $idNumeroIntentos=$consulta->numeroIntentos;
+        $numeroToros=0;
+        $numeroVacas=0;
+
+        for ($i=0; $i < strlen($id); $i++) {
+            if ($id[$i]==$idNumeroPropuesto[$i]) {
+                $numeroToros++;
+            }else if (in_array($id[$i],$idNumeroPropuesto)==true) {
+                $numeroVacas++;
+            }
+        }
 
         $datagame = [
             'numero propuesto'=>$id,
-            'Cantidad de toros y vacas alcanzados'
+            'Cantidad de toros alcanzados'=>$numeroToros,
+            'Cantidad de vacas alcanzados'=>$numeroVacas,
+            'Numero de intentos alcanzados'=>$idNumeroIntentos,
         ];
 
-        return response()->json($consulta,200);
+        return response()->json($datagame,200);
     }
 
     /**

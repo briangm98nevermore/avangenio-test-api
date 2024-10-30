@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ToroVacaGame;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Global_;
 
 class ToroVacaGameController extends Controller
 {
@@ -17,10 +14,6 @@ class ToroVacaGameController extends Controller
      */
     public function gameOver()
     {
-       $data = [4,4,4,4];
-         //$comprobacion=in_array(4,$data);
-         return response()->json($data);
-
     }
 
     public function timergame(){
@@ -57,6 +50,7 @@ class ToroVacaGameController extends Controller
             ['nombre'=>$request->nombre,
              'edad'=>$request->edad,
              'numeroPropuesto'=>fake()->randomNumber(4,true),
+             'numeroIntentos'=>1
              ]
         );
 
@@ -79,7 +73,7 @@ class ToroVacaGameController extends Controller
     public function proponerCombinacion(string $id)
     {
 
-        if (!is_numeric($id)) {
+        if (!is_numeric($id)) {     //comprobar que el dato sea numerico
             $data=[
                 'msg'=>'El valor no es numerico',
                 'valor'=>$id,
@@ -87,7 +81,7 @@ class ToroVacaGameController extends Controller
             ];
             return response()->json($data,500);
         }
-        if (strlen($id)!=4) {
+        if (strlen($id)!=4) {   //comprobar que el numero sea de 4 digitos
             $data=[
                 'msg'=>'El valor debe ser de cuatro digitos',
                 'valor'=>$id,
@@ -96,9 +90,12 @@ class ToroVacaGameController extends Controller
             return response()->json($data,500);
         }
 
-        $consulta = ToroVacaGame::latest('id')->first();
-        $string=(string)$consulta->numeroPropuesto;
-        $idNumeroPropuesto=str_split($string);
+
+        $consulta = ToroVacaGame::latest('id')->first();    //obtener ultimo registro de la tabla
+        $string=(string)$consulta->numeroPropuesto;     //parsea un numerico a string
+        $idNumeroPropuesto=str_split($string);      //convierte string to array
+        $consulta->increment('numeroIntentos');     //incrementar contador de intentos en 1
+
         $idNumeroIntentos=$consulta->numeroIntentos;
         $numeroToros=0;
         $numeroVacas=0;

@@ -7,8 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Info(
+ *    title="AVANGENIO-TEST-API",
+ *    version="3.0.0",
+ * )
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     securityScheme="bearerAuth",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+
+ */
+
 class ToroVacaGameController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -28,6 +43,29 @@ class ToroVacaGameController extends Controller
         //CrearNuevoJuego
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/game/CrearNuevoJuego",
+     *     summary="Endpoint para crear un nuevo juego",
+     *     @OA\Parameter(
+     *         name="nombre",
+     *         in="query",
+     *         description="Nombre del usuario",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="edad",
+     *         in="query",
+     *         description="Edad del usuario",
+     *         required=true,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Response(response="200", description="Juego creado correctamente"),
+     *     @OA\Response(response="500", description="Error en la creacion del juego"),
+     *     @OA\Response(response="400", description="Error en la validacion de los datos")
+     * )
+     */
     public function CrearNuevoJuego(Request $request)
     {
 
@@ -63,7 +101,13 @@ class ToroVacaGameController extends Controller
             return response()->json($data,500);
         }
 
-       return response()->json($id,200);
+        $data = [
+            'msg'=>'Juego creado correctamente',
+            'Identificador'=>$id,
+            'status' => 200
+        ];
+
+       return response()->json($data,200);
 
     }
 

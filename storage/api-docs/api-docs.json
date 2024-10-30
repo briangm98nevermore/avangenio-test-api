@@ -1,0 +1,55 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AVANGENIO-TEST-API",
+        "version": "3.0.0"
+    },
+    "paths": {
+        "/api/game/CrearNuevoJuego": {
+            "post": {
+                "summary": "Endpoint para crear un nuevo juego",
+                "operationId": "6a4dd7f15b8133a3dbe0a8bc18c2e21c",
+                "parameters": [
+                    {
+                        "name": "nombre",
+                        "in": "query",
+                        "description": "Nombre del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "edad",
+                        "in": "query",
+                        "description": "Edad del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "int"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Juego creado correctamente"
+                    },
+                    "500": {
+                        "description": "Error en la creacion del juego"
+                    },
+                    "400": {
+                        "description": "Error en la validacion de los datos"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

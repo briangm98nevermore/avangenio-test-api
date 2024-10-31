@@ -29,10 +29,36 @@ class ToroVacaGameController extends Controller
      */
     public function gameOver()
     {
+
     }
 
     public function timergame(){
-       return 'timegame';
+
+       $DateAndTime1 = localtime(time(), true);
+       $tiempoNow = ($DateAndTime1['tm_min']*60)+$DateAndTime1['tm_sec'];//segundos actual
+
+        $consulta = ToroVacaGame::latest('id')->first();
+        $parser = (string)$consulta->created_at;
+        $salida = str_split($parser);
+        $timeServer = array_slice($salida,14);
+        $minutos = $timeServer[0] . $timeServer[1];
+        $segundos = $timeServer[3] . $timeServer[4];
+
+        $minutos = intval($minutos);
+        $segundos = intval($segundos);
+
+         $arrayTimeDB = [
+            'tiempo en minutos'=>$minutos,
+            'tiempo en segundos'=>$segundos
+        ];
+
+       $tiempoRealDB = ($arrayTimeDB['tiempo en minutos']*60)+$arrayTimeDB['tiempo en segundos'];//tiempo DB
+
+       if (($tiempoNow-$tiempoRealDB)>300) {
+            return 'tiempo expirado';
+       }else {
+        return 'sigues en juego';
+       }
     }
 
     /**
@@ -84,13 +110,15 @@ class ToroVacaGameController extends Controller
             return response()->json($data,400);
         }
 
-        $id = DB::table('toro_vaca_games')->insertGetId(
+        ToroVacaGame::create(
             ['nombre'=>$request->nombre,
              'edad'=>$request->edad,
              'numeroPropuesto'=>fake()->randomNumber(4,true),
              'numeroIntentos'=>1
              ]
         );
+
+        $id = ToroVacaGame::latest('id')->first();
 
         if (!$id) {
             $data = [
@@ -103,7 +131,7 @@ class ToroVacaGameController extends Controller
 
         $data = [
             'msg'=>'Juego creado correctamente',
-            'Identificador'=>$id,
+            'Identificador'=>$id->id,
             'status' => 200
         ];
 
@@ -134,6 +162,25 @@ class ToroVacaGameController extends Controller
             return response()->json($data,500);
         }
 
+        $DateAndTime1 = localtime(time(), true);
+        $tiempoNow = ($DateAndTime1['tm_min']*60)+$DateAndTime1['tm_sec'];//segundos actual
+
+         $consulta = ToroVacaGame::latest('id')->first();
+         $parser = (string)$consulta->created_at;
+         $salida = str_split($parser);
+         $timeServer = array_slice($salida,14);
+         $minutos = $timeServer[0] . $timeServer[1];
+         $segundos = $timeServer[3] . $timeServer[4];
+
+         $minutos = intval($minutos);
+         $segundos = intval($segundos);
+
+          $arrayTimeDB = [
+             'tiempo en minutos'=>$minutos,
+             'tiempo en segundos'=>$segundos
+         ];
+
+        $tiempoRealDB = ($arrayTimeDB['tiempo en minutos']*60)+$arrayTimeDB['tiempo en segundos'];//tiempo DB
 
         $consulta = ToroVacaGame::latest('id')->first();    //obtener ultimo registro de la tabla
         $string=(string)$consulta->numeroPropuesto;     //parsea un numerico a string
@@ -144,6 +191,16 @@ class ToroVacaGameController extends Controller
         $numeroToros=0;
         $numeroVacas=0;
 
+         //********************* */
+         if (($tiempoNow-$tiempoRealDB)>300) { //CAMBIAR 300 POR VALOR GLOBAL .ENV
+            $data = [
+                'msg'=>'Game Over. Tiempo expirado',
+                'Numero secreto'=>$string
+            ];
+            return response()->json($data);
+        }
+        //************************* */
+
         for ($i=0; $i < strlen($id); $i++) {
             if ($id[$i]==$idNumeroPropuesto[$i]) {
                 $numeroToros++;
@@ -152,11 +209,16 @@ class ToroVacaGameController extends Controller
             }
         }
 
+        $tiempoDisponible =300-($tiempoNow-$tiempoRealDB);
+        $evaluacion = ($tiempoDisponible/2)+$idNumeroIntentos;
+
         $datagame = [
             'numero propuesto'=>$id,
             'Cantidad de toros alcanzados'=>$numeroToros,
             'Cantidad de vacas alcanzados'=>$numeroVacas,
             'Numero de intentos alcanzados'=>$idNumeroIntentos,
+            'Tiempo disponible en segundos'=>$tiempoDisponible,
+            'Evaluacion'=>$evaluacion
         ];
 
         return response()->json($datagame,200);

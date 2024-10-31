@@ -24,41 +24,11 @@ use Illuminate\Support\Facades\DB;
 class ToroVacaGameController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function gameOver()
-    {
-
-    }
-
     public function timergame(){
-
-       $DateAndTime1 = localtime(time(), true);
-       $tiempoNow = ($DateAndTime1['tm_min']*60)+$DateAndTime1['tm_sec'];//segundos actual
-
         $consulta = ToroVacaGame::latest('id')->first();
-        $parser = (string)$consulta->created_at;
-        $salida = str_split($parser);
-        $timeServer = array_slice($salida,14);
-        $minutos = $timeServer[0] . $timeServer[1];
-        $segundos = $timeServer[3] . $timeServer[4];
-
-        $minutos = intval($minutos);
-        $segundos = intval($segundos);
-
-         $arrayTimeDB = [
-            'tiempo en minutos'=>$minutos,
-            'tiempo en segundos'=>$segundos
-        ];
-
-       $tiempoRealDB = ($arrayTimeDB['tiempo en minutos']*60)+$arrayTimeDB['tiempo en segundos'];//tiempo DB
-
-       if (($tiempoNow-$tiempoRealDB)>300) {
-            return 'tiempo expirado';
-       }else {
-        return 'sigues en juego';
-       }
+        //$consulta->estado = true;
+        //$consulta->save();
+        return gettype($consulta->estado);
     }
 
     /**
@@ -125,7 +95,6 @@ class ToroVacaGameController extends Controller
                 'msg'=>'Error en la creacion del juego',
                 'status' => 500
             ];
-
             return response()->json($data,500);
         }
 
@@ -136,11 +105,31 @@ class ToroVacaGameController extends Controller
         ];
 
        return response()->json($data,200);
-
     }
 
     /**
      * Display the specified resource.
+     */
+
+
+    /**
+     * @OA\Get(
+     *     path="/api/game/proponerCombinacion/{numero}",
+     *     summary="Endpoint para validar el numero propuesto",
+     *     @OA\Parameter(
+     *         name="numero",
+     *         in="path",
+     *         description="Nombre del usuario",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *
+     *     @OA\Response(response="501", description="El valor no es numerico"),
+     *     @OA\Response(response="502", description="El valor debe ser de cuatro digitos"),
+     *     @OA\Response(response="201", description="Este juego ya ha sido jugado con anterioridad"),
+     *     @OA\Response(response="202", description="Game Over. Tiempo expirado"),
+     *     @OA\Response(response="203", description="Game Win. Numero adivinado")
+     * )
      */
     public function proponerCombinacion(string $id)
     {
@@ -185,32 +174,58 @@ class ToroVacaGameController extends Controller
         $consulta = ToroVacaGame::latest('id')->first();    //obtener ultimo registro de la tabla
         $string=(string)$consulta->numeroPropuesto;     //parsea un numerico a string
         $idNumeroPropuesto=str_split($string);      //convierte string to array
-        $consulta->increment('numeroIntentos');     //incrementar contador de intentos en 1
 
         $idNumeroIntentos=$consulta->numeroIntentos;
         $numeroToros=0;
         $numeroVacas=0;
+        $tiempoDisponible =300-($tiempoNow-$tiempoRealDB);
+      //  $timeLocal = $tiempoNow-$tiempoRealDB;
+        $evaluacion = ($tiempoDisponible/2)+$idNumeroIntentos;
 
-         //********************* */
-         if (($tiempoNow-$tiempoRealDB)>300) { //CAMBIAR 300 POR VALOR GLOBAL .ENV
+        //************************* */
+
+        if (!is_null($consulta->estado)) {  //VALIDAR SI EL JUEGO YA FUE JUGADO
+            $data = [
+                'msg'=>'Este juego ya ha sido jugado con anterioridad',
+                'status'=>200
+            ];
+            return response()->json($data,200);
+        }
+
+        if ((($tiempoNow-$tiempoRealDB)>300)) { //VALIDAR SI QUEDA TIEMPO
+
             $data = [
                 'msg'=>'Game Over. Tiempo expirado',
-                'Numero secreto'=>$string
+                'Numero secreto'=>$string,
+                'status'=>200
             ];
+            $consulta->estado = false;
+            $consulta->save();
             return response()->json($data);
         }
         //************************* */
 
-        for ($i=0; $i < strlen($id); $i++) {
+        if ($id==$string) { // VALIDACION DE JUEGO GANADO
+            $data = [
+                'msg'=>'Game Win. Numero adivinado',
+                'Numero secreto'=>$string,
+                'status'=>200
+            ];
+            $consulta->estado = true;
+            $consulta->save();
+
+            return response()->json($data,200);
+        }
+
+        //************************* */
+
+        for ($i=0; $i < strlen($id); $i++) {    //CALCULAR CANTIDAD DE TOROS Y VACAS
             if ($id[$i]==$idNumeroPropuesto[$i]) {
                 $numeroToros++;
             }else if (in_array($id[$i],$idNumeroPropuesto)==true) {
                 $numeroVacas++;
             }
         }
-
-        $tiempoDisponible =300-($tiempoNow-$tiempoRealDB);
-        $evaluacion = ($tiempoDisponible/2)+$idNumeroIntentos;
 
         $datagame = [
             'numero propuesto'=>$id,
@@ -220,6 +235,8 @@ class ToroVacaGameController extends Controller
             'Tiempo disponible en segundos'=>$tiempoDisponible,
             'Evaluacion'=>$evaluacion
         ];
+
+        $consulta->increment('numeroIntentos');     //incrementar contador de intentos en 1
 
         return response()->json($datagame,200);
     }

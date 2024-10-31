@@ -42,6 +42,40 @@
                 }
             }
         },
+        "/api/game/proponerCombinacion/{numero}": {
+            "get": {
+                "summary": "Endpoint para validar el numero propuesto",
+                "operationId": "902749aca8c984d22cc9de319cc430b7",
+                "parameters": [
+                    {
+                        "name": "numero",
+                        "in": "path",
+                        "description": "Nombre del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "501": {
+                        "description": "El valor no es numerico"
+                    },
+                    "502": {
+                        "description": "El valor debe ser de cuatro digitos"
+                    },
+                    "201": {
+                        "description": "Este juego ya ha sido jugado con anterioridad"
+                    },
+                    "202": {
+                        "description": "Game Over. Tiempo expirado"
+                    },
+                    "203": {
+                        "description": "Game Win. Numero adivinado"
+                    }
+                }
+            }
+        },
         "/api/game/EliminarJuego/{id}": {
             "delete": {
                 "summary": "Endpoint para eliminar un juego existente",

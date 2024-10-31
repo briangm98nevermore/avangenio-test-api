@@ -21,7 +21,7 @@ class ToroVacaGameFactory extends Factory
             'edad' => fake()->randomNumber(2,true),
             'numeroPropuesto'=>fake()->randomNumber(4,true),
             'numeroIntentos'=>fake()->randomNumber(2,true),
-            'estado' => fake()->numberBetween(0,1),
+            'estado' => fake()->boolean(),
             'evaluacion'=>fake()->randomFloat(2,20,500),
             'ranking' => fake()->randomFloat(2,20,500)
         ];

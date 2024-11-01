@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre')->require;
             $table->integer('edad')->require;
             $table->integer('numeroPropuesto')->nullable();
+            $table->///////////////////
             $table->integer('numeroIntentos')->nullable();
             $table->boolean('estado')->nullable();
             $table->float('evaluacion')->nullable();

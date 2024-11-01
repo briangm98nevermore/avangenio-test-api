@@ -6,6 +6,8 @@ use App\Models\ToroVacaGame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use SplStack;
+
 
 /**
  * @OA\Info(
@@ -26,31 +28,7 @@ class ToroVacaGameController extends Controller
 
     public function GetRanking()
     {
-        $dataganados = DB::table('toro_vaca_games')->where('estado', '=',1)->orderByDesc('evaluacion')->get('evaluacion');
-        $dataperdidos = DB::table('toro_vaca_games')->where('estado', '=',0)->orderByDesc('evaluacion')->get('evaluacion');
-
-        $data1 = json_decode($dataganados,true);
-        $data2 = json_decode($dataperdidos,true);
-
-        $cont1=0;
-        $cont2=0;
-        foreach ($data1 as $key => $value) {
-           foreach ($value as $key => $value) {
-            if ($value>300) {
-                $cont1++;
-            }
-           }
-        }
-        foreach ($data2 as $key => $value) {
-            foreach ($value as $key => $value) {
-             if ($value>300) {
-                 $cont2++;
-             }
-            }
-         }
-
-        return count($data2);
-
+       return env('TIME_GAME');
     }
 
     /**
@@ -209,7 +187,7 @@ class ToroVacaGameController extends Controller
             return response()->json($data,200);
         }
 
-        if ((($tiempoNow-$tiempoRealDB)>300)) { //VALIDAR SI QUEDA TIEMPO
+        if ((($tiempoNow-$tiempoRealDB)>env('TIME_GAME'))) { //VALIDAR SI QUEDA TIEMPO
 
             $dataganados = DB::table('toro_vaca_games')->where('estado', '=',1)->orderByDesc('evaluacion')->get('evaluacion');
             $dataperdidos = DB::table('toro_vaca_games')->where('estado', '=',0)->orderByDesc('evaluacion')->get('evaluacion');

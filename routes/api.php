@@ -13,6 +13,7 @@ Route::prefix('game')->group(function () {
     Route::post('/CrearNuevoJuego',[ToroVacaGameController::class,'CrearNuevoJuego']);
     Route::delete('/EliminarJuego/{id}',[ToroVacaGameController::class,'destroy']);
     Route::get('/proponerCombinacion/{numero}',[ToroVacaGameController::class,'proponerCombinacion']);
-    Route::get('/GetRanking',[ToroVacaGameController::class,'GetRanking']);
+    Route::get('/RespuestaPrevia/{numero}/{try}',[ToroVacaGameController::class,'RespuestaPrevia']);
+    Route::get('/store/{numero1}/{numero2}',[ToroVacaGameController::class,'store']);
 
 });

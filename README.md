@@ -64,3 +64,9 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## REQUERIMIENTOS
+
+Variable de entorno (TIME_GAME), establece el tiempo en segundos la duracion de cada juego.
+Correr migraciones junto con Seeders (php artisan migrate:refresh --seed).

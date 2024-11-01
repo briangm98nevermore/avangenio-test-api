@@ -70,3 +70,4 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 Variable de entorno (TIME_GAME), establece el tiempo en segundos la duracion de cada juego.
 Correr migraciones junto con Seeders (php artisan migrate:refresh --seed).
+Documentacion realizada con Swagger, Instalar paquetes correspondientes.

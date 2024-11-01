@@ -111,7 +111,7 @@ class ToroVacaGameController extends Controller
      *     @OA\Parameter(
      *         name="numero",
      *         in="path",
-     *         description="Nombre del usuario",
+     *         description="Numero a validar",
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
@@ -319,6 +319,31 @@ class ToroVacaGameController extends Controller
         return response()->json($data,200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/game/RespuestaPrevia/{numero}/{numero}",
+     *     summary="Endpoint para visualizar posibles respuestas",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Numero a comprobar",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="numero",
+     *         in="path",
+     *         description="Numero de intentos",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Response(response="501", description="El valor no es numerico"),
+     *     @OA\Response(response="502", description="El valor debe ser de cuatro digitos"),
+     *     @OA\Response(response="201", description="Este juego ya ha sido jugado con anterioridad"),
+     *
+     * )
+     */
     public function RespuestaPrevia(string $id,int $numero)
     {
 

@@ -10,9 +10,9 @@ Route::get('/user', function (Request $request) {
 
 Route::prefix('game')->group(function () {
 
-Route::get('/tiempodejuego',[ToroVacaGameController::class,'timergame']);
-Route::post('/CrearNuevoJuego',[ToroVacaGameController::class,'CrearNuevoJuego']);
-Route::delete('/EliminarJuego/{id}',[ToroVacaGameController::class,'destroy']);
-Route::get('/proponerCombinacion/{numero}',[ToroVacaGameController::class,'proponerCombinacion']);
+    Route::post('/CrearNuevoJuego',[ToroVacaGameController::class,'CrearNuevoJuego']);
+    Route::delete('/EliminarJuego/{id}',[ToroVacaGameController::class,'destroy']);
+    Route::get('/proponerCombinacion/{numero}',[ToroVacaGameController::class,'proponerCombinacion']);
+    Route::get('/GetRanking',[ToroVacaGameController::class,'GetRanking']);
 
 });

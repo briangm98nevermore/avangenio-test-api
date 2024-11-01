@@ -24,11 +24,33 @@ use Illuminate\Support\Facades\DB;
 class ToroVacaGameController extends Controller
 {
 
-    public function timergame(){
-        $consulta = ToroVacaGame::latest('id')->first();
-        //$consulta->estado = true;
-        //$consulta->save();
-        return gettype($consulta->estado);
+    public function GetRanking()
+    {
+        $dataganados = DB::table('toro_vaca_games')->where('estado', '=',1)->orderByDesc('evaluacion')->get('evaluacion');
+        $dataperdidos = DB::table('toro_vaca_games')->where('estado', '=',0)->orderByDesc('evaluacion')->get('evaluacion');
+
+        $data1 = json_decode($dataganados,true);
+        $data2 = json_decode($dataperdidos,true);
+
+        $cont1=0;
+        $cont2=0;
+        foreach ($data1 as $key => $value) {
+           foreach ($value as $key => $value) {
+            if ($value>300) {
+                $cont1++;
+            }
+           }
+        }
+        foreach ($data2 as $key => $value) {
+            foreach ($value as $key => $value) {
+             if ($value>300) {
+                 $cont2++;
+             }
+            }
+         }
+
+        return count($data2);
+
     }
 
     /**
@@ -106,11 +128,6 @@ class ToroVacaGameController extends Controller
 
        return response()->json($data,200);
     }
-
-    /**
-     * Display the specified resource.
-     */
-
 
     /**
      * @OA\Get(
@@ -194,24 +211,59 @@ class ToroVacaGameController extends Controller
 
         if ((($tiempoNow-$tiempoRealDB)>300)) { //VALIDAR SI QUEDA TIEMPO
 
-            $data = [
-                'msg'=>'Game Over. Tiempo expirado',
+            $dataganados = DB::table('toro_vaca_games')->where('estado', '=',1)->orderByDesc('evaluacion')->get('evaluacion');
+            $dataperdidos = DB::table('toro_vaca_games')->where('estado', '=',0)->orderByDesc('evaluacion')->get('evaluacion');
+            $data1 = json_decode($dataganados,true);
+            $cont = count($data1);
+            $data2 = json_decode($dataperdidos,true);
+            $cont2=0;
+            foreach ($data2 as $key => $value) {
+                foreach ($value as $key => $value) {
+                 if ($value>$evaluacion) {
+                     $cont2++;
+                 }
+                }
+             }
+
+             $data = [
+                'msg'=>'Game Over. Tiempo terminado',
                 'Numero secreto'=>$string,
+                'Ranking'=>($cont2+1)+$cont,
                 'status'=>200
             ];
+
             $consulta->estado = false;
+            $consulta->evaluacion = $evaluacion;
+            $consulta->ranking = ($cont2+1)+$cont;
             $consulta->save();
+
             return response()->json($data);
         }
         //************************* */
 
         if ($id==$string) { // VALIDACION DE JUEGO GANADO
-            $data = [
+
+            $dataganados = DB::table('toro_vaca_games')->where('estado', '=',1)->orderByDesc('evaluacion')->get('evaluacion');
+            $data1 = json_decode($dataganados,true);
+            $cont1=0;
+            foreach ($data1 as $key => $value) {
+                foreach ($value as $key => $value) {
+                 if ($value>$evaluacion) {
+                     $cont1++;
+                 }
+                }
+             }
+
+             $data = [
                 'msg'=>'Game Win. Numero adivinado',
                 'Numero secreto'=>$string,
+                'Ranking'=>$cont1+1,
                 'status'=>200
             ];
+
             $consulta->estado = true;
+            $consulta->evaluacion = $evaluacion;
+            $consulta->ranking = $cont1+1;
             $consulta->save();
 
             return response()->json($data,200);
@@ -219,7 +271,8 @@ class ToroVacaGameController extends Controller
 
         //************************* */
 
-        for ($i=0; $i < strlen($id); $i++) {    //CALCULAR CANTIDAD DE TOROS Y VACAS
+        for ($i=0; $i < strlen($id); $i++)
+        {    //CALCULAR CANTIDAD DE TOROS Y VACAS
             if ($id[$i]==$idNumeroPropuesto[$i]) {
                 $numeroToros++;
             }else if (in_array($id[$i],$idNumeroPropuesto)==true) {

@@ -50,7 +50,7 @@
                     {
                         "name": "numero",
                         "in": "path",
-                        "description": "Nombre del usuario",
+                        "description": "Numero a validar",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -97,6 +97,43 @@
                     },
                     "500": {
                         "description": "El juego no existe."
+                    }
+                }
+            }
+        },
+        "/api/game/RespuestaPrevia/{numero}/{numero}": {
+            "get": {
+                "summary": "Endpoint para visualizar posibles respuestas",
+                "operationId": "021419cda2406200123b7e1304762d14",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Numero a comprobar",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "numero",
+                        "in": "path",
+                        "description": "Numero de intentos",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "501": {
+                        "description": "El valor no es numerico"
+                    },
+                    "502": {
+                        "description": "El valor debe ser de cuatro digitos"
+                    },
+                    "201": {
+                        "description": "Este juego ya ha sido jugado con anterioridad"
                     }
                 }
             }

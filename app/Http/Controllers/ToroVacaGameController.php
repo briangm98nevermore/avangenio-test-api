@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ToroVacaGame;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use SplStack;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Info(
@@ -23,17 +27,22 @@ use Illuminate\Support\Facades\DB;
 
 class ToroVacaGameController extends Controller
 {
+    protected static $array = [];
     /**
      * Store a newly created resource in storage.
      */
-    public function store(int $numero1, int $numero2)
+     public function store(int $valor)
     {
-        $data = [
-            'numero1'=>$numero1,
-            'numero2'=>$numero2,
-        ];
+            // Obtén el array de la caché, o un array vacío si no existe
+        $array = Cache::get('mi_array', []);
 
-        return $data;
+        // Agrega el nuevo valor al array
+        $array[] = $valor;
+
+        // Guarda el array en la caché, con duración de 60 minutos
+        Cache::put('mi_array', $array, 360); // 6 minutos
+
+        return $array;
     }
 
     /**
@@ -62,6 +71,7 @@ class ToroVacaGameController extends Controller
     public function CrearNuevoJuego(Request $request)
     {
 
+        return response()->json($request->header());
         $validator = Validator::make($request->all(),[
             'nombre'=>'required|max:255',
             'edad'=>'required|digits_between:1,2'
@@ -77,9 +87,12 @@ class ToroVacaGameController extends Controller
             return response()->json($data,400);
         }
 
-        ToroVacaGame::create(
+        $apiKey = Str::random(32);
+
+      $game = ToroVacaGame::create(
             ['nombre'=>$request->nombre,
              'edad'=>$request->edad,
+             'api_key'=>$apiKey,
              'numeroPropuesto'=>fake()->randomNumber(4,true),
              'numeroIntentos'=>1
              ]
@@ -95,9 +108,12 @@ class ToroVacaGameController extends Controller
             return response()->json($data,500);
         }
 
+       // $token = JWTAuth::fromUser($game);
+
         $data = [
             'msg'=>'Juego creado correctamente',
             'Identificador'=>$id->id,
+           // 'token'=>$token,
             'status' => 200
         ];
 

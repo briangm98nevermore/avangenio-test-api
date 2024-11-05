@@ -16,6 +16,7 @@ class ToroVacaGame extends Model
     protected $fillable = [
         'nombre',
         'edad',
+        'token',
         'api_key',
         'numeroPropuesto',
         'numeroIntentos',

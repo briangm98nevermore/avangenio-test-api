@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use SplStack;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -27,22 +28,15 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ToroVacaGameController extends Controller
 {
-    protected static $array = [];
+
     /**
      * Store a newly created resource in storage.
      */
-     public function store(int $valor)
+    public function store(int $valor)
     {
-            // Obtén el array de la caché, o un array vacío si no existe
-        $array = Cache::get('mi_array', []);
+               // Obtén el array de la caché, o un array vacío si no existe
+           return $array = Cache::get('arrayCache', []);
 
-        // Agrega el nuevo valor al array
-        $array[] = $valor;
-
-        // Guarda el array en la caché, con duración de 60 minutos
-        Cache::put('mi_array', $array, 360); // 6 minutos
-
-        return $array;
     }
 
     /**
@@ -71,7 +65,7 @@ class ToroVacaGameController extends Controller
     public function CrearNuevoJuego(Request $request)
     {
 
-        return response()->json($request->header());
+       // return response()->json($request->header());
         $validator = Validator::make($request->all(),[
             'nombre'=>'required|max:255',
             'edad'=>'required|digits_between:1,2'
@@ -87,11 +81,13 @@ class ToroVacaGameController extends Controller
             return response()->json($data,400);
         }
 
-        $apiKey = Str::random(32);
+        $token = Str::random(32);
+        $apiKey = Hash::make($token);
 
       $game = ToroVacaGame::create(
             ['nombre'=>$request->nombre,
              'edad'=>$request->edad,
+             'token'=>$token,
              'api_key'=>$apiKey,
              'numeroPropuesto'=>fake()->randomNumber(4,true),
              'numeroIntentos'=>1
@@ -113,10 +109,10 @@ class ToroVacaGameController extends Controller
         $data = [
             'msg'=>'Juego creado correctamente',
             'Identificador'=>$id->id,
-           // 'token'=>$token,
             'status' => 200
         ];
 
+        Cache::forget('arrayCache');
        return response()->json($data,200);
     }
 
@@ -200,6 +196,20 @@ class ToroVacaGameController extends Controller
             return response()->json($data,200);
         }
 
+        // Obtén el array de la caché, o un array vacío si no existe
+        $array = Cache::get('arrayCache', []);
+            if (in_array($id,$array)) {
+                $data=[
+                    'msg'=>'Este numero ya fue enviado anteriormente en el mismo orden',
+                    'status'=>501
+                ];
+                return response()->json($data,501);
+            }
+            // Agrega el nuevo valor al array
+        $array[] = $id;
+             // Guarda el array en la caché, con duración de 6 minutos
+        Cache::put('arrayCache', $array);
+
         if ((($tiempoNow-$tiempoRealDB)>env('TIME_GAME'))) { //VALIDAR SI QUEDA TIEMPO
 
             $dataganados = DB::table('toro_vaca_games')->where('estado', '=',1)->orderByDesc('evaluacion')->get('evaluacion');
@@ -227,6 +237,8 @@ class ToroVacaGameController extends Controller
             $consulta->evaluacion = $evaluacion;
             $consulta->ranking = ($cont2+1)+$cont;
             $consulta->save();
+
+            Cache::forget('arrayCache');
 
             return response()->json($data);
         }
@@ -256,6 +268,8 @@ class ToroVacaGameController extends Controller
             $consulta->evaluacion = $evaluacion;
             $consulta->ranking = $cont1+1;
             $consulta->save();
+
+            Cache::forget('arrayCache');
 
             return response()->json($data,200);
         }

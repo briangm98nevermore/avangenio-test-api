@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre')->require;
             $table->integer('edad')->require;
+            $table->string('token')->unique();
             $table->string('api_key')->unique();
             $table->integer('numeroPropuesto')->nullable();
             $table->integer('numeroIntentos')->nullable();

@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('toro_vaca_games', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->require;
-            $table->integer('edad')->require;
             $table->string('token')->unique();
             $table->string('api_key')->unique();
             $table->integer('numeroPropuesto')->nullable();
@@ -22,6 +20,13 @@ return new class extends Migration
             $table->boolean('estado')->nullable();
             $table->float('evaluacion')->nullable();
             $table->integer('ranking')->nullable();
+
+            $table->unsignedBigInteger('user_id')
+            ->constrained()
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->timestamps();
         });
     }

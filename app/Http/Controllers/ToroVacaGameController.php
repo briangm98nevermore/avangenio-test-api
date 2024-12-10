@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use SplStack;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Info(
@@ -103,8 +101,6 @@ class ToroVacaGameController extends Controller
             ];
             return response()->json($data,500);
         }
-
-       // $token = JWTAuth::fromUser($game);
 
         $data = [
             'msg'=>'Juego creado correctamente',

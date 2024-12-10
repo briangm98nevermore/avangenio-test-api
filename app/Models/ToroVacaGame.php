@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 
 class ToroVacaGame extends Model
@@ -14,8 +15,6 @@ class ToroVacaGame extends Model
     protected $table = 'toro_vaca_games';
 
     protected $fillable = [
-        'nombre',
-        'edad',
         'token',
         'api_key',
         'numeroPropuesto',
@@ -24,4 +23,10 @@ class ToroVacaGame extends Model
         'evaluacion',
         'ranking'
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

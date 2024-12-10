@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -19,15 +20,14 @@ class ToroVacaGameFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => fake()->name(),
-            'edad' => fake()->randomNumber(2,true),
             'token'=>Str::random(32),
             'api_key'=>Hash::make('token'),
             'numeroPropuesto'=>fake()->randomNumber(4,true),
             'numeroIntentos'=>fake()->randomNumber(2,true),
             'estado' => fake()->boolean(),
             'evaluacion'=>fake()->randomFloat(2,20,500),
-            'ranking' => fake()->randomFloat(2,20,500)
+            'ranking' => fake()->randomFloat(2,20,500),
+           // 'user_id' => User::factory()
         ];
     }
 }

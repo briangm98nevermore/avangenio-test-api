@@ -83,8 +83,7 @@ class ToroVacaGameController extends Controller
         $apiKey = Hash::make($token);
 
       $game = ToroVacaGame::create(
-            ['nombre'=>$request->nombre,
-             'edad'=>$request->edad,
+            [
              'token'=>$token,
              'api_key'=>$apiKey,
              'numeroPropuesto'=>fake()->randomNumber(4,true),

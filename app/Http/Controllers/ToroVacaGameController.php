@@ -30,10 +30,10 @@ class ToroVacaGameController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(int $valor)
+    public function store()
     {
                // Obtén el array de la caché, o un array vacío si no existe
-           return $array = Cache::get('arrayCache', []);
+           return 'hello world';
 
     }
 

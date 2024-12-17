@@ -56,7 +56,7 @@ class AuthController extends Controller
 
     public function logout(){
 
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return response()->json(['msg' => 'No hay usuario autenticado'], 401);
         }
 

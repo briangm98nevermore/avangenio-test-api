@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ToroVacaGame;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -62,38 +63,31 @@ class ToroVacaGameController extends Controller
      */
     public function CrearNuevoJuego(Request $request)
     {
-
-       // return response()->json($request->header());
-        $validator = Validator::make($request->all(),[
-            'nombre'=>'required|max:255',
-            'edad'=>'required|digits_between:1,2'
-        ]);
-
-        if ($validator->fails()) {
+        if (!Auth::check()) {
             $data = [
-                'msg'=>'Error en la validacion de los datos',
-                'errores'=>$validator->errors(),
-                'status' => 400
+                'msg'=>'Usuario no autenticado',
+                'status' => 500
             ];
+            return response()->json($data,500);
+        };
 
-            return response()->json($data,400);
-        }
-
+        $id = Auth::id();
         $token = Str::random(32);
         $apiKey = Hash::make($token);
 
-      $game = ToroVacaGame::create(
+      ToroVacaGame::create(
             [
              'token'=>$token,
              'api_key'=>$apiKey,
              'numeroPropuesto'=>fake()->randomNumber(4,true),
-             'numeroIntentos'=>1
+             'numeroIntentos'=>1,
+             'user_id'=>$id
              ]
         );
 
-        $id = ToroVacaGame::latest('id')->first();
+        $idgame = ToroVacaGame::latest('id')->first();
 
-        if (!$id) {
+        if (!$idgame) {
             $data = [
                 'msg'=>'Error en la creacion del juego',
                 'status' => 500
@@ -103,7 +97,7 @@ class ToroVacaGameController extends Controller
 
         $data = [
             'msg'=>'Juego creado correctamente',
-            'Identificador'=>$id->id,
+            'Identificador'=>$idgame->id,
             'status' => 200
         ];
 

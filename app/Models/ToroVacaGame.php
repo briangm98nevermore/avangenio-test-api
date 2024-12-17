@@ -21,7 +21,8 @@ class ToroVacaGame extends Model
         'numeroIntentos',
         'estado',
         'evaluacion',
-        'ranking'
+        'ranking',
+        'user_id'
     ];
 
     public function user(): BelongsTo
